@@ -1,6 +1,24 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from mptt.models import MPTTModel, TreeForeignKey
+
+
+class PlaceCategory(MPTTModel):
+    parent_category = TreeForeignKey('self', null=True, blank=True,
+                                     related_name='category_children',
+                                     db_index=True,
+                                     verbose_name=_('parent category'))
+    name = models.CharField(_('name'), max_length=40)
+    slug = models.SlugField(_('slug'), max_length=20, unique=True)
+
+    class Meta:
+        verbose_name = _('place category')
+        verbose_name_plural = _('place categories')
+
+    def __str__(self):
+        return self.name
+
 
 class Place(models.Model):
     FREE = 0

@@ -40,6 +40,8 @@ class Place(models.Model):
     google_places_id = models.CharField(_('Google API Place ID'),
                                         max_length=100, blank=True,
                                         unique=True)
+    categories = models.ManyToManyField('PlaceCategory', related_name='place',
+                                        verbose_name=_('categories'))
     description = models.TextField(_('description'))
     website = models.URLField(_('website'), blank=True)
     address = models.CharField(_('formatted address'), max_length=255)

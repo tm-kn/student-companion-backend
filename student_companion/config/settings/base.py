@@ -14,6 +14,7 @@ INSTALLED_APPS = [
 
     'places',
     'comments',
+    'ratings',
 ]
 
 MIDDLEWARE = [

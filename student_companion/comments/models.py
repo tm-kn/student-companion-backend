@@ -9,7 +9,7 @@ class PlaceComment(models.Model):
                               verbose_name=_('place'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='place_comment',
-                             verbose_name=_('place'))
+                             verbose_name=_('user'))
     comment = models.TextField(_('comment'))
     created_at = models.DateTimeField(_('created at'), default=timezone.now)
 

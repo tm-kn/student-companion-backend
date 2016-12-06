@@ -10,8 +10,4 @@ class BasePlaceCategorySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PlaceCategorySerializer(BasePlaceCategorySerializer):
-    def __init__(self, *args, **kwargs):
-        self.fields['category_children'] = BasePlaceCategorySerializer(
-            many=True,
-            read_only=True)
-        super(PlaceCategorySerializer, self).__init__(*args, **kwargs)
+    category_children = BasePlaceCategorySerializer(many=True, read_only=True)

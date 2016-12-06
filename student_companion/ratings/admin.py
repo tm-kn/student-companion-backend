@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import PlaceRating
+
+
+@admin.register(PlaceRating)
+class PlaceRatingAdmin(admin.ModelAdmin):
+    pass

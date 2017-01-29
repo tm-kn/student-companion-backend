@@ -28,7 +28,7 @@ class PlaceCategorySerializer(serializers.ModelSerializer):
 class PlaceImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaceImage
-        fields = ('id', 'image_height', 'image_width')
+        fields = ('id', 'image', 'image_height', 'image_width')
 
 
 class PlaceTagSerializer(serializers.ModelSerializer):

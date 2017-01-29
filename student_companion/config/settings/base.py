@@ -57,7 +57,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR.joinpath('db.sqlite3')),
+        'NAME': str(BASE_DIR.parent.joinpath('db.sqlite3')),
     }
 }
 
@@ -88,8 +88,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = str(BASE_DIR.joinpath('collected_static'))
+STATIC_ROOT = str(BASE_DIR.parent.joinpath('collected_static'))
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
+MEDIA_ROOT = str(BASE_DIR.parent.joinpath('media'))

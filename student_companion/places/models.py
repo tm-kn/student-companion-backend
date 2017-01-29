@@ -39,6 +39,7 @@ class Place(models.Model):
     slug = models.SlugField(_('slug'), max_length=30, unique=True)
     is_visible = models.BooleanField(_('is visible'), default=False)
     google_places_id = models.CharField(_('Google API Place ID'),
+                                        default=None,
                                         max_length=100, blank=True,
                                         unique=True)
     categories = models.ManyToManyField('PlaceCategory', related_name='place',
@@ -68,6 +69,26 @@ class Place(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class PlaceImage(models.Model):
+    place = models.ForeignKey('Place', related_name='place_images',
+                              related_query_name='place_image',
+                              verbose_name=_('Place'))
+    image = models.ImageField(upload_to='places', height_field='image_height',
+                              width_field='image_width',
+                              verbose_name=_('Image'))
+    image_height = models.PositiveSmallIntegerField(_('image height'),
+                                                    blank=True)
+    image_width = models.PositiveSmallIntegerField(_('image width'),
+                                                   blank=True)
+
+    class Meta:
+        verbose_name = _('place image')
+        verbose_name_plural = _('place images')
+
+    def __str__(self):
+        return '{}\'s image'.format(self.place)
 
 
 class PlaceTag(models.Model):

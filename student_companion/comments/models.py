@@ -5,7 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class PlaceComment(models.Model):
-    place = models.ForeignKey('places.Place', related_name='place_comment',
+    place = models.ForeignKey('places.Place', related_name='place_comments',
+                              related_query_name='place_comment',
                               verbose_name=_('place'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='place_comment',

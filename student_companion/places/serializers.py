@@ -44,7 +44,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ('place_comment', 'place_rating', 'id', 'name', 'slug',
+        fields = ('place_comments', 'place_ratings', 'id', 'name', 'slug',
                   'is_visible', 'google_places_id', 'description', 'website',
                   'address', 'telephone_number', 'facebook_handle',
                   'twitter_handle', 'student_discount', 'opening_times',

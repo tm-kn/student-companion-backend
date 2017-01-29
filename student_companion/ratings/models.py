@@ -9,7 +9,8 @@ MAX_RATING_VALUE = 5
 
 
 class PlaceRating(models.Model):
-    place = models.ForeignKey('places.Place', related_name='place_rating',
+    place = models.ForeignKey('places.Place', related_name='place_ratings',
+                              related_query_name='place_rating',
                               verbose_name=_('place'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='place_rating',

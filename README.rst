@@ -32,16 +32,21 @@ Software
   # On Windows
   set DJANGO_SETTINGS_MODULE=configuration.settings.local
   
+  # Go to the folder that has the management script in (manage.py)
+  cd student_companion
+  
   # Migrate database
-  python student_companion/manage.py migrate
+  python manage.py migrate
   
   # Create super user
-  python student_companion/manage.py createsuperuser
+  python manage.py createsuperuser
  
   
 
 Usage
 -----
+Make sure to activate virtual environment (``source venv/bin/activate`` on Linux or ``venv/Scripts/Activate.ps1`` on Windows' Power Shell) everytime you execute the following commands. It needs to show (venv) by the left side of every line in the terminal.
+
 Use ``python manage.py runserver`` command to start the server.
 
 Go to ``http://localhost:8000/admin`` url to open the administration site.

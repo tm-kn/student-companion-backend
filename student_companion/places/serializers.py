@@ -15,16 +15,6 @@ class SubPlaceCategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'slug', 'url')
 
 
-class PlaceCategorySerializer(serializers.ModelSerializer):
-    category_children = SubPlaceCategorySerializer(many=True, read_only=True)
-    place = SubPlaceSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = PlaceCategory
-        fields = ('id', 'name', 'slug', 'parent', 'category_children', 'place',
-                  'url')
-
-
 class PlaceImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaceImage
@@ -49,3 +39,13 @@ class PlaceSerializer(serializers.ModelSerializer):
                   'address', 'telephone_number', 'facebook_handle',
                   'twitter_handle', 'student_discount', 'opening_times',
                   'price_level', 'categories', 'tags', 'url', 'place_images')
+
+
+class PlaceCategorySerializer(serializers.ModelSerializer):
+    category_children = SubPlaceCategorySerializer(many=True, read_only=True)
+    places = PlaceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = PlaceCategory
+        fields = ('id', 'name', 'slug', 'parent', 'category_children',
+                  'places', 'url')

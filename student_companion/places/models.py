@@ -42,7 +42,8 @@ class Place(models.Model):
                                         default=None,
                                         max_length=100, blank=True,
                                         unique=True)
-    categories = models.ManyToManyField('PlaceCategory', related_name='place',
+    categories = models.ManyToManyField('PlaceCategory', related_name='places',
+                                        related_query_name='place',
                                         verbose_name=_('categories'),
                                         blank=True)
     description = models.TextField(_('description'), blank=True)

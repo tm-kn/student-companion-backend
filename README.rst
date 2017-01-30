@@ -6,7 +6,7 @@ Setup
 -----
 
 Software
-  - `Python 3.5 <https://python.org/>`_
+  - `Python 3.5 <https://python.org/>`_ (If you use Windows make sure to select option to add Python to PATH)
   
 .. code-block:: bash
 
@@ -14,28 +14,34 @@ Software
   cd student-companion-backend
 
   # Create virtual environment
-  python3 -m venv venv
+  python -m venv venv
   
-  # Activate virtual environment
+  # Activate virtual environment (Linux)
   source venv/bin/activate
   
-  # Install requirements
+  # Activate virtual environment (Windows Power Shell)
+  venv/Scripts/Activate.ps1
+  
+  # Install requirementst
   pip install -r requirements/base.txt
   
   # Add configuration file to your path (add it to your .bashrc or
   # will have to repeat it every time before using manage.py)
   export DJANGO_SETTINGS_MODULE=configuration.settings.local
   
+  # On Windows
+  set DJANGO_SETTINGS_MODULE=configuration.settings.local
+  
   # Migrate database
-  student_companion/manage.py migrate
+  python student_companion/manage.py migrate
   
   # Create super user
-  student_companion/manage.py createsuperuser
+  python student_companion/manage.py createsuperuser
  
   
 
 Usage
 -----
-Use ``manage.py runserver`` command to start the server.
+Use ``python manage.py runserver`` command to start the server.
 
 Go to ``http://localhost:8000/admin`` url to open the administration site.

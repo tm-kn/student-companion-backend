@@ -43,6 +43,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
 class PlaceCategorySerializer(serializers.ModelSerializer):
     category_children = SubPlaceCategorySerializer(many=True, read_only=True)
+    parent = SubPlaceCategorySerializer(read_only=True)
     places = PlaceSerializer(many=True, read_only=True)
 
     class Meta:

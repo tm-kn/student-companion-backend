@@ -20,6 +20,14 @@ class PlaceCategory(MPTTModel):
         return self.name
 
 
+class PlaceQuerySet(models.QuerySet):
+    def visible(self):
+        return self.filter(is_visible=True)
+
+    def search(self, search_string):
+        return self.filter(name__icontains=search_string)
+
+
 class Place(models.Model):
     FREE = 0
     INEXPENSIVE = 1
@@ -63,6 +71,7 @@ class Place(models.Model):
                                                    choices=PRICE_LEVEL_CHOICES,
                                                    blank=True, null=True)
     tags = models.ManyToManyField('PlaceTag', blank=True)
+    objects = PlaceQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('place')

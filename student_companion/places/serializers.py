@@ -13,6 +13,7 @@ class SubPlaceCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaceCategory
         fields = ('id', 'name', 'slug', 'url')
+        read_only_fields = ('name', 'slug', 'url')
 
 
 class PlaceImageSerializer(serializers.ModelSerializer):
@@ -28,7 +29,7 @@ class PlaceTagSerializer(serializers.ModelSerializer):
 
 
 class PlaceSerializer(serializers.ModelSerializer):
-    categories = SubPlaceCategorySerializer(read_only=True, many=True)
+    categories_data = SubPlaceCategorySerializer(source='categories', read_only=True, many=True)
     place_images = PlaceImageSerializer(read_only=True, many=True)
     tags = PlaceTagSerializer(read_only=True, many=True)
 
@@ -38,12 +39,13 @@ class PlaceSerializer(serializers.ModelSerializer):
                   'is_visible', 'google_places_id', 'description', 'website',
                   'address', 'telephone_number', 'facebook_handle',
                   'twitter_handle', 'student_discount', 'opening_times',
-                  'price_level', 'categories', 'tags', 'url', 'place_images')
+                  'price_level', 'categories', 'tags', 'url', 'place_images',
+                  'categories_data')
         read_only_fields = ('place_comments', 'place_ratings', 'id', 'name',
                             'slug', 'is_visible', 'description', 'website',
                             'address', 'telephone_number', 'facebook_handle',
                             'twitter_handle', 'opening_times', 'price_level',
-                            'categories', 'tags', 'url', 'place_images')
+                            'tags', 'url', 'place_images', 'categories_data')
 
     def create(self, validated_data):
         place = Place()
@@ -52,6 +54,9 @@ class PlaceSerializer(serializers.ModelSerializer):
         place.is_visible = False
 
         place = place.update_data_from_google_api(commit=False)
+        place.save()
+
+        place.categories = validated_data.get('categories')
         place.save()
 
         return place

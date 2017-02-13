@@ -7,13 +7,18 @@ from mptt.models import MPTTModel, TreeForeignKey
 from google_places import GooglePlacesService
 
 
+class PlaceCategoryQuerySet(models.QuerySet):
+    pass
+
+
 class PlaceCategory(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='category_children',
                             db_index=True,
                             verbose_name=_('parent category'))
     name = models.CharField(_('name'), max_length=40)
-    slug = models.SlugField(_('slug'), max_length=20, unique=True)
+    slug = models.SlugField(_('slug'), max_length=255, unique=True)
+    objects = PlaceCategoryQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('place category')
@@ -50,7 +55,7 @@ class Place(models.Model):
     )
 
     name = models.CharField(_('name'), max_length=30)
-    slug = models.SlugField(_('slug'), max_length=30, unique=True)
+    slug = models.SlugField(_('slug'), max_length=255, unique=True)
     is_visible = models.BooleanField(_('is visible'), default=False)
     google_places_id = models.CharField(_('Google API Place ID'),
                                         max_length=100,

@@ -1,7 +1,10 @@
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from mptt.models import MPTTModel, TreeForeignKey
+
+from google_places import GooglePlacesService
 
 
 class PlaceCategory(MPTTModel):
@@ -25,7 +28,10 @@ class PlaceQuerySet(models.QuerySet):
         return self.filter(is_visible=True)
 
     def search(self, search_string):
-        return self.filter(name__icontains=search_string)
+        return self.filter(
+            models.Q(name__icontains=search_string) |
+            models.Q(tags__name__icontains=search_string)
+        ).distinct()
 
 
 class Place(models.Model):
@@ -47,8 +53,7 @@ class Place(models.Model):
     slug = models.SlugField(_('slug'), max_length=30, unique=True)
     is_visible = models.BooleanField(_('is visible'), default=False)
     google_places_id = models.CharField(_('Google API Place ID'),
-                                        default=None,
-                                        max_length=100, blank=True,
+                                        max_length=100,
                                         unique=True)
     categories = models.ManyToManyField('PlaceCategory', related_name='places',
                                         related_query_name='place',
@@ -56,6 +61,7 @@ class Place(models.Model):
                                         blank=True)
     description = models.TextField(_('description'), blank=True)
     website = models.URLField(_('website'), blank=True)
+    google_maps_url = models.URLField(_('Google Maps URL'), blank=True)
     address = models.CharField(_('formatted address'), max_length=255,
                                blank=True)
     telephone_number = models.CharField(_('formatted telephone number'),
@@ -70,15 +76,57 @@ class Place(models.Model):
     price_level = models.PositiveSmallIntegerField(_('price level'),
                                                    choices=PRICE_LEVEL_CHOICES,
                                                    blank=True, null=True)
-    tags = models.ManyToManyField('PlaceTag', blank=True)
+    tags = models.ManyToManyField('PlaceTag', blank=True,
+                                  related_name='places',
+                                  related_query_name='place')
+    location_latitude = models.FloatField(_('latitude'), blank=True, null=True)
+    location_longitude = models.FloatField(_('longitude'), blank=True,
+                                           null=True)
     objects = PlaceQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('place')
         verbose_name_plural = _('places')
 
+    def __init__(self, *args, **kwargs):
+        super(Place, self).__init__(*args, **kwargs)
+        self.google_service = GooglePlacesService()
+
     def __str__(self):
         return self.name
+
+    def get_place_from_google_api(self):
+        if not self.google_places_id:
+            raise Exception("Such place does not exist in Google Places API.")
+
+        return self.google_service.get_place(self.google_places_id)
+
+    def update_data_from_google_api(self, commit=True):
+        place_json = self.get_place_from_google_api()
+
+        if not self.name:
+            self.name = place_json.get('name', '')
+
+        if not self.slug:
+            self.slug = '{}-{}'.format(
+                slugify(self.name),
+                self.google_places_id
+            )
+
+        self.address = place_json.get('formatted_address', '')
+        self.website = place_json.get('website', '')
+        self.opening_times = ', '.join(place_json.get('weekday_text', []))
+        self.telephone_number = place_json.get('formatted_phone_number', '')
+        location = place_json.get('geometry').get('location')
+        self.location_latitude = location.get('lat')
+        self.location_longitude = location.get('lng')
+        self.google_maps_url = place_json.get('url')
+        self.price_level = place_json.get('price_level')
+
+        if commit:
+            self.save()
+
+        return self
 
 
 class PlaceImage(models.Model):

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 
 from .models import Place, PlaceCategory
 from .serializers import PlaceSerializer, PlaceCategorySerializer
@@ -11,7 +11,7 @@ class PlaceCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PlaceCategorySerializer
 
 
-class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+class PlaceViewSet(mixins.CreateModelMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Place.objects.visible()
     serializer_class = PlaceSerializer
 

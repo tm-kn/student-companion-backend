@@ -39,6 +39,22 @@ class PlaceSerializer(serializers.ModelSerializer):
                   'address', 'telephone_number', 'facebook_handle',
                   'twitter_handle', 'student_discount', 'opening_times',
                   'price_level', 'categories', 'tags', 'url', 'place_images')
+        read_only_fields = ('place_comments', 'place_ratings', 'id', 'name',
+                            'slug', 'is_visible', 'description', 'website',
+                            'address', 'telephone_number', 'facebook_handle',
+                            'twitter_handle', 'opening_times', 'price_level',
+                            'categories', 'tags', 'url', 'place_images')
+
+    def create(self, validated_data):
+        place = Place()
+        place.google_places_id = validated_data.get('google_places_id', '')
+        place.student_discount = validated_data.get('student_discount', '')
+        place.is_visible = False
+
+        place = place.update_data_from_google_api(commit=False)
+        place.save()
+
+        return place
 
 
 class PlaceCategorySerializer(serializers.ModelSerializer):

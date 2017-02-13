@@ -1,3 +1,4 @@
+from django.core import files
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
@@ -118,9 +119,13 @@ class Place(models.Model):
                 self.google_places_id
             )
 
+        if not self.description:
+            self.description = place_json.get('review_summary', '')
+
         self.address = place_json.get('formatted_address', '')
         self.website = place_json.get('website', '')
-        self.opening_times = ', '.join(place_json.get('weekday_text', []))
+        self.opening_times = ', '.join(place_json.get('opening_hours', {})
+                                                 .get('weekday_text', []))
         self.telephone_number = place_json.get('formatted_phone_number', '')
         location = place_json.get('geometry').get('location')
         self.location_latitude = location.get('lat')
@@ -133,26 +138,55 @@ class Place(models.Model):
 
         return self
 
+    def update_images_from_google_api(self):
+        self.place_images.all().delete()
+
+        place_photos_json = self.get_place_from_google_api().get('photos', [])
+
+        for place_photo in place_photos_json:
+            new_image = PlaceImage()
+            new_image.place = self
+            new_image.image_width = place_photo.get('width')
+            new_image.image_height = place_photo.get('height')
+            new_image.google_place_photo_id = place_photo.get(
+                'photo_reference')
+            new_image.update_image_from_google_api()
 
 class PlaceImage(models.Model):
     place = models.ForeignKey('Place', related_name='place_images',
                               related_query_name='place_image',
                               verbose_name=_('Place'))
+    google_place_photo_id = models.CharField(_('Google API Place Photo ID'),
+                                             max_length=255,
+                                             unique=True)
     image = models.ImageField(upload_to='places', height_field='image_height',
                               width_field='image_width',
                               verbose_name=_('Image'))
     image_height = models.PositiveSmallIntegerField(_('image height'),
-                                                    blank=True)
+                                                    blank=True,
+                                                    null=True)
     image_width = models.PositiveSmallIntegerField(_('image width'),
-                                                   blank=True)
+                                                   blank=True,
+                                                   null=True)
 
     class Meta:
         verbose_name = _('place image')
         verbose_name_plural = _('place images')
 
+    def __init__(self, *args, **kwargs):
+        super(PlaceImage, self).__init__(*args, **kwargs)
+        self.google_service = GooglePlacesService()
+
     def __str__(self):
         return '{}\'s image'.format(self.place)
 
+    def update_image_from_google_api(self):
+        if not self.google_place_photo_id:
+            raise Exception("No Google Place Photo ID")
+
+        lf = self.google_service.get_place_photo(self.google_place_photo_id)
+
+        self.image.save(self.google_place_photo_id + '.jpg', files.File(lf))
 
 class PlaceTag(models.Model):
     name = models.SlugField(_('tag'), max_length=10)

@@ -93,3 +93,15 @@ STATIC_ROOT = str(BASE_DIR.parent.joinpath('collected_static'))
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = str(BASE_DIR.parent.joinpath('media'))
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    )
+}
+
+JWT_AUTH = {
+    
+}

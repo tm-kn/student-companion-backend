@@ -29,7 +29,8 @@ class PlaceTagSerializer(serializers.ModelSerializer):
 
 
 class PlaceSerializer(serializers.ModelSerializer):
-    categories_data = SubPlaceCategorySerializer(source='categories', read_only=True, many=True)
+    categories_data = SubPlaceCategorySerializer(source='categories',
+                                                 read_only=True, many=True)
     place_images = PlaceImageSerializer(read_only=True, many=True)
     tags = PlaceTagSerializer(read_only=True, many=True)
 
@@ -40,12 +41,13 @@ class PlaceSerializer(serializers.ModelSerializer):
                   'address', 'telephone_number', 'facebook_handle',
                   'twitter_handle', 'student_discount', 'opening_times',
                   'price_level', 'categories', 'tags', 'url', 'place_images',
-                  'categories_data')
+                  'categories_data', 'google_maps_url')
         read_only_fields = ('place_comments', 'place_ratings', 'id', 'name',
                             'slug', 'is_visible', 'website',
                             'address', 'telephone_number', 'facebook_handle',
                             'twitter_handle', 'opening_times', 'price_level',
-                            'tags', 'url', 'place_images', 'categories_data')
+                            'tags', 'url', 'place_images', 'categories_data',
+                            'google_maps_url')
 
     def create(self, validated_data):
         place = Place()

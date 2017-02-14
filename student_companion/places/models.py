@@ -55,7 +55,7 @@ class Place(models.Model):
         (VERY_EXPENSIVE, _('very expensive')),
     )
 
-    name = models.CharField(_('name'), max_length=30)
+    name = models.CharField(_('name'), max_length=255)
     slug = models.SlugField(_('slug'), max_length=255, unique=True)
     is_visible = models.BooleanField(_('is visible'), default=False)
     google_places_id = models.CharField(_('Google API Place ID'),

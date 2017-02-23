@@ -1,3 +1,4 @@
+import datetime
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -17,6 +18,7 @@ INSTALLED_APPS = [
     'places',
     'comments',
     'ratings',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -102,6 +104,10 @@ REST_FRAMEWORK = {
     )
 }
 
+AUTH_USER_MODEL = 'users.User'
+
 JWT_AUTH = {
-    
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.views.jwt_response_payload_handler',
 }

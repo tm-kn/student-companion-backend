@@ -4,12 +4,14 @@ from .models import Place, PlaceCategory, PlaceImage, PlaceTag
 
 
 class SubPlaceSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Place
         fields = ('id', 'url')
 
 
 class SubPlaceCategorySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = PlaceCategory
         fields = ('id', 'name', 'slug', 'url')
@@ -17,12 +19,14 @@ class SubPlaceCategorySerializer(serializers.ModelSerializer):
 
 
 class PlaceImageSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = PlaceImage
         fields = ('id', 'image', 'image_height', 'image_width')
 
 
 class PlaceTagSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = PlaceTag
         fields = ('id', 'name')
@@ -41,16 +45,32 @@ class PlaceSerializer(serializers.ModelSerializer):
                   'address', 'telephone_number', 'facebook_handle',
                   'twitter_handle', 'student_discount', 'opening_times',
                   'price_level', 'categories', 'tags', 'url', 'place_images',
-                  'categories_data', 'google_maps_url')
-        read_only_fields = ('place_comments', 'place_ratings', 'id', 'name',
-                            'slug', 'is_visible', 'website',
-                            'address', 'telephone_number', 'facebook_handle',
-                            'twitter_handle', 'opening_times', 'price_level',
-                            'tags', 'url', 'place_images', 'categories_data',
-                            'google_maps_url')
+                  'categories_data', 'google_maps_url', 'submitted_by')
+        extra_kwargs = {
+            'place_comments': {'read_only': True},
+            'place_ratings': {'read_only': True},
+            'id': {'read_only': True},
+            'name': {'read_only': True},
+            'slug': {'read_only': True},
+            'is_visible': {'read_only': True},
+            'website': {'read_only': True},
+            'address': {'read_only': True},
+            'telephone_number': {'read_only': True},
+            'facebook_handle': {'read_only': True},
+            'twitter_handle': {'read_only': True},
+            'opening_times': {'read_only': True},
+            'price_level': {'read_only': True},
+            'submitted_by': {'required': True},
+            'tags': {'read_only': True},
+            'url': {'read_only': True},
+            'place_images': {'read_only': True},
+            'categories_data': {'read_only': True},
+            'google_maps_url': {'read_only': True}
+        }
 
     def create(self, validated_data):
         place = Place()
+        place.submitted_by = validated_data.get('submitted_by', None)
         place.google_places_id = validated_data.get('google_places_id', '')
         place.student_discount = validated_data.get('student_discount', '')
         place.description = validated_data.get('description', '')

@@ -27,6 +27,10 @@ class GooglePlacesService:
         })
 
         response.raise_for_status()
+
+        if response.json().get('status', '') != 'OK':
+            raise Exception('Place with that ID not found')
+
         return response.json().get('result', {})
 
     def get_place_photo(self, photo_reference, max_width=400, max_height=400):

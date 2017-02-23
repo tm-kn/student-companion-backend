@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.core import files
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
@@ -57,6 +59,11 @@ class Place(models.Model):
 
     name = models.CharField(_('name'), max_length=255)
     slug = models.SlugField(_('slug'), max_length=255, unique=True)
+    submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                     verbose_name=_('submitted by'),
+                                     blank=True, null=True,
+                                     related_name='submitted_places',
+                                     related_query_name='submitted_place')
     is_visible = models.BooleanField(_('is visible'), default=False)
     google_places_id = models.CharField(_('Google API Place ID'),
                                         max_length=100,
@@ -103,9 +110,13 @@ class Place(models.Model):
 
     def get_place_from_google_api(self):
         if not self.google_places_id:
-            raise Exception("Such place does not exist in Google Places API.")
+            raise Exception("Such place does not have Google Places API.")
 
-        return self.google_service.get_place(self.google_places_id)
+        try:
+            return self.google_service.get_place(self.google_places_id)
+        except Exception:
+            raise ValidationError("Google place ID is not valid.")
+
 
     def update_data_from_google_api(self, commit=True):
         place_json = self.get_place_from_google_api()

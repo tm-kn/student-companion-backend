@@ -2,7 +2,7 @@ import os
 
 from .base import *
 
-SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+SECRET_KEY = 'testprodkey'
 
 DEBUG = True
 
@@ -28,3 +28,7 @@ DATABASES = {
         'NAME': str(BASE_DIR.parent.joinpath('db.sqlite3'))
     }
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+

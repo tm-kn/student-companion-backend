@@ -21,3 +21,11 @@ def jwt_response_payload_handler(token, user=None, request=None):
         'token': token,
         'user': UserSerializer(user, context={'request': request}).data
     }
+
+
+class RegisterUserView(generics.CreateAPIView):
+    model = get_user_model()
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = UserSerializer

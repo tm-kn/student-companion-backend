@@ -4,13 +4,13 @@ from .base import *
 
 SECRET_KEY = 'testprodkey'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['138.68.151.100']
+ALLOWED_HOSTS = ['django.sc.tmkn.uk']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-GOOGLE_PLACES_API_KEY = 'AIzaSyDO02iLFQF0pKitcUla-RUtCELpyF6OS2U'
+GOOGLE_PLACES_API_KEY = 'AIzaSyCL9oi9bAt0LKDNDoIlacveotaMzt80fus'
 
 #DATABASES = {
 #    'default': {

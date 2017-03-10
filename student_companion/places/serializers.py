@@ -60,7 +60,6 @@ class PlaceSerializer(serializers.ModelSerializer):
             'twitter_handle': {'read_only': True},
             'opening_times': {'read_only': True},
             'price_level': {'read_only': True},
-            'submitted_by': {'required': True},
             'tags': {'read_only': True},
             'url': {'read_only': True},
             'place_images': {'read_only': True},

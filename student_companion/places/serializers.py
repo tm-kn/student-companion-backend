@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from ratings.serializers import PlaceRatingSerializer
 from .models import Place, PlaceCategory, PlaceImage, PlaceTag
 
 
@@ -37,6 +38,7 @@ class PlaceSerializer(serializers.ModelSerializer):
                                                  read_only=True, many=True)
     place_images = PlaceImageSerializer(read_only=True, many=True)
     tags = PlaceTagSerializer(read_only=True, many=True)
+    place_ratings = PlaceRatingSerializer(read_only=True, many=True)
 
     class Meta:
         model = Place

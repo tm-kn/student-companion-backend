@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
@@ -15,6 +16,7 @@ class PlaceRating(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='place_rating',
                              verbose_name=_('user'))
+    description = models.TextField(_('description'), blank=True)
     rating = models.PositiveSmallIntegerField(
         _('rating'),
         validators=[MinValueValidator(MIN_RATING_VALUE),
@@ -28,4 +30,8 @@ class PlaceRating(models.Model):
         unique_together = ('place', 'user')
 
     def __str__(self):
-        return _('Rating on %s by %s.') % (place, user)
+        return _('Rating on %s by %s.') % (self.place, self.user)
+
+    @property
+    def max_rating(self):
+        return MAX_RATING_VALUE

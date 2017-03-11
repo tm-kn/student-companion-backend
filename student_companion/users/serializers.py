@@ -35,3 +35,19 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+class PublicUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ['id', 'first_name', 'last_name']
+        extra_kwargs = {
+            'id': {
+                'read_only': True
+            },
+            'first_name': {
+                'read_only': True
+            },
+            'last_name': {
+                'read_only': True
+            }
+        }

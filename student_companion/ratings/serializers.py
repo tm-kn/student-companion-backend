@@ -34,7 +34,16 @@ class PlaceRatingSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        if PlaceRating.objects.filter(place=validated_data['place'], user=validated_data['user']).exists():
-            raise serializers.ValidationError({'detail': _('You have already rated this place')})
-
-        return self.model.objects.create(**validated_data)
+        try:
+            place_rating = self.model.objects.get(
+                place=validated_data['place'],
+                user=validated_data['user']
+            )
+        except PlaceRating.DoesNotExist:
+            return self.model.objects.create(**validated_data)
+        else:
+            place_rating.description = validated_data['description']
+            place_rating.rating = validated_data['rating']
+            place_rating.rated_at = validated_data['rated_at']
+            place_rating.save()
+            return place_rating

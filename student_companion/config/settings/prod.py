@@ -31,4 +31,8 @@ DATABASES = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+MEDIA_URL = 'https://django.sc.tmkn.uk/media/'
+
+STATIC_URL = 'https://django.sc.tmkn.uk/static/'

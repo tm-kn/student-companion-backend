@@ -1,9 +1,11 @@
 from django.utils.translation import ugettext_lazy as _
+from django.utils.module_loading import import_string
 
 from rest_framework import serializers
 
-from users.serializers import PublicUserSerializer
 from .models import PlaceRating
+
+PublicUserSerializer = import_string('users.serializers.PublicUserSerializer')
 
 class PlaceRatingSerializer(serializers.ModelSerializer):
     user = PublicUserSerializer(read_only=True)

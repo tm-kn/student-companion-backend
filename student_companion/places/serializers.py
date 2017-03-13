@@ -1,7 +1,9 @@
 from rest_framework import serializers
+from django.utils.module_loading import import_string
 
-from ratings.serializers import PlaceRatingSerializer
 from .models import Place, PlaceCategory, PlaceImage, PlaceTag
+
+PlaceRatingSerializer = import_string('ratings.serializers.PlaceRatingSerializer')
 
 
 class SubPlaceSerializer(serializers.ModelSerializer):

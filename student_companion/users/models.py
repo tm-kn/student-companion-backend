@@ -55,6 +55,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    bookmarked_places = models.ManyToManyField(
+        'places.Place',
+        verbose_name=_('bookmarked places'),
+        related_name='users',
+        related_query_name='user'
+    )
 
     objects = UserManager()
 
